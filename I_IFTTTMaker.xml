@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<implementation>
+<functions>
+
+-- Include required library
+--
+
+local url = require("socket.url")
+local http = require("socket.http")
+local https = require("ssl.https")
+require('ltn12')
+
+local UI_VERSION_FILE = "/etc/cmh/ui"
+    
+-- Constant definitions
+--
+local ITEM_SID = "urn:upnp-org:serviceId:IFTTTMaker1"
+local PLUGIN_VERSION  = "0.01" 
+local PluginActive=1
+ 
+     
+function triggerEvent(lul_device, event_name, value1, value2, value3, api_key) 
+    local request_url = "" 
+    local response_body = {}
+
+    request_url = "https:" .. "\047" .. "\047" .. "maker.ifttt.com" .. "\047" .. "trigger" .. "\047" .. event_name .. "\047" .. "with" .. "\047" .. "key" .. "\047" .. api_key
+
+    --luup.log("(IFTTTMaker)::(triggerEvent):: event_name=" .. event_name)
+    --luup.log("(IFTTTMaker)::(triggerEvent):: value1=" .. value1)
+    --luup.log("(IFTTTMaker)::(triggerEvent):: value2=" .. value2)
+    --luup.log("(IFTTTMaker)::(triggerEvent):: value3=" .. value3)
+    --luup.log("(IFTTTMaker)::(triggerEvent):: api_key=" .. api_key)
+    --luup.log("(IFTTTMaker)::(triggerEvent):: request_url=" .. request_url)
+    
+    local request_body = '{"value1": "' .. value1 .. '", "value2": "' .. value2 .. '", "value3": "' .. value3 .. '"}'
+
+    local r, c, h = https.request{
+        url = request_url,
+        method = "POST",
+        source = ltn12.source.string(request_body),
+        headers = {
+            ["content-type"] = "application/json",
+            ["content-length"] = tostring(#request_body)
+        },
+        sink = ltn12.sink.table(response_body)
+    }
+
+    if (tonumber(c) == 200) then
+	    luup.log("(IFTTTMaker)::(triggerEvent) : Request successful")
+    else
+	    luup.log("(IFTTTMaker)::(triggerEvent) : Request failed: " .. tonumber(c))
+    end 
+
+end
+    
+function init(lul_device)    
+   luup.log("(IFTTTMaker)::(init) : starting up...")
+    --triggerEvent(lul_device, "test", "test", "this is a test", "", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+	luup.log("(IFTTTMaker)::(init) : Startup OK!")
+end
+    
+
+</functions>
+    <startup>init</startup>
+    <actionList>
+        <action>
+            <serviceId>urn:upnp-org:serviceId:IFTTTMaker1</serviceId>
+            <name>TriggerEvent</name>
+            <run>
+                triggerEvent(lul_device, lul_settings.EventName or "", lul_settings.Value1 or "", lul_settings.Value2 or "", lul_settings.Value3 or "", lul_settings.APIKey or "")
+            </run>
+        </action>  
+    </actionList>
+</implementation>

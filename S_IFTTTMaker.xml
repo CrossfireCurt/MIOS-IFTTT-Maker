@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <serviceStateTable>
+    <stateVariable>
+       <sendEventsAttribute>no</sendEventsAttribute>
+       <name>RequestStatus</name>
+       <dataType>string</dataType>
+       <shortCode>requeststatus</shortCode>
+    </stateVariable>
+  </serviceStateTable>
+  <actionList>
+    <action>
+      <name>TriggerEvent</name>
+      <argumentList>
+        <argument>
+          <name>EventName</name>
+          <direction>in</direction>
+          <relatedStateVariable>string</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Value1</name>
+          <direction>in</direction>
+          <relatedStateVariable>string</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Value2</name>
+          <direction>in</direction>
+          <relatedStateVariable>string</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Value3</name>
+          <direction>in</direction>
+          <relatedStateVariable>string</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>APIKey</name>
+          <direction>in</direction>
+          <relatedStateVariable>string</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+  </actionList>
+</scpd>
+ 
+ 
